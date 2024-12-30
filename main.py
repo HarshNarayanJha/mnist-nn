@@ -4,9 +4,15 @@
 """
 
 # %%
+import os
+
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+
+# %%
 import keras
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 
 # %%
 X_train_full: np.ndarray[int, np.dtype[np.float64]]
@@ -43,3 +49,38 @@ n = int(np.random.random() * y_train.shape[0])
 plt.imshow(X_train[n], cmap=plt.get_cmap("gray"))
 plt.show()
 print(class_names[y_train[n]])
+
+# %% [md]
+"""
+### Enter Easy Neural Networks!
+"""
+
+# %%
+model = keras.models.Sequential()
+model.add(keras.layers.Flatten(input_shape=[28, 28]))
+model.add(keras.layers.Dense(128, activation="relu"))
+model.add(keras.layers.Dense(64, activation="relu"))
+model.add(keras.layers.Dense(10, activation="softmax"))
+
+# sigmoid: probabilities produces are independent (sum to more than 1)
+# softmax: probabilities produces are dependent, they sum to 1
+
+# %%
+model.summary()
+
+# %%
+model.layers
+
+# %%
+model.compile(loss="sparse_categorical_crossentropy", optimizer="sgd", metrics=["accuracy"])
+
+# %%
+X_train.shape
+# %%
+history: keras.callbacks.History = model.fit(X_train, y_train, epochs=10, validation_data=(X_val, y_val), batch_size=32)
+
+# %%
+pd.DataFrame(history.history).plot(figsize=(15, 8))
+plt.grid(True)
+plt.gca().set_ylim(0, 1)
+plt.show()
