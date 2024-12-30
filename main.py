@@ -13,6 +13,8 @@ import keras
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import seaborn as sns
+import tensorflow as tf
 
 # %%
 X_train_full: np.ndarray[int, np.dtype[np.float64]]
@@ -83,4 +85,25 @@ history: keras.callbacks.History = model.fit(X_train, y_train, epochs=10, valida
 pd.DataFrame(history.history).plot(figsize=(15, 8))
 plt.grid(True)
 plt.gca().set_ylim(0, 1)
+plt.show()
+
+# %%
+model.evaluate(X_test, y_test)
+# %%
+y_prob: np.ndarray = model.predict(X_test)
+y_classes = y_prob.argmax(axis=-1)
+print(y_classes)
+# %%
+confusion_matrix = tf.math.confusion_matrix(y_test, y_classes)
+
+# %%
+axs = sns.heatmap(confusion_matrix, annot=True, fmt="g", cmap="Blues")
+
+axs.set_xlabel("Predicted Labels")
+axs.set_ylabel("True Labels")
+axs.set_title("Confusion Matrix")
+axs.xaxis.set_ticklabels(class_names)
+axs.yaxis.set_ticklabels(class_names)
+axs.figure.set_size_inches(12, 10)
+
 plt.show()
