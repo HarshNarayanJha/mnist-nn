@@ -60,8 +60,8 @@ print(class_names[y_train[n]])
 # %%
 model = keras.models.Sequential()
 model.add(keras.layers.Flatten(input_shape=[28, 28]))
-model.add(keras.layers.Dense(128, activation="relu"))
-model.add(keras.layers.Dense(64, activation="relu"))
+model.add(keras.layers.Dense(200, activation="relu"))
+model.add(keras.layers.Dense(100, activation="relu"))
 model.add(keras.layers.Dense(10, activation="softmax"))
 
 # sigmoid: probabilities produces are independent (sum to more than 1)
@@ -107,3 +107,20 @@ axs.yaxis.set_ticklabels(class_names)
 axs.figure.set_size_inches(12, 10)
 
 plt.show()
+
+# %%
+# Custom Data Prediction
+
+from PIL import Image  # noqa: E402
+
+imgs = [Image.open(x).convert("L") for x in ("./2.jpg", "./3.jpg", "./5.jpg")]
+imgs = np.array([np.array(x) for x in imgs])
+pred = model.predict(imgs)
+preds = pred.argmax(axis=-1)
+for img, pred in zip(imgs, preds):
+    plt.imshow(img, cmap=plt.get_cmap("gray"))
+    plt.show()
+    print("Predicted Class:", class_names[pred])
+# %%
+model.save("mnist_digit.keras")
+model.save_weights("mnist_digit.weights.h5")

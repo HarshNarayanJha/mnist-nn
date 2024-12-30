@@ -178,3 +178,5 @@ poetry.toml
 *.model
 *.pkl
 data
+*.keras
+*.weights.h5
