@@ -104,7 +104,7 @@ axs.set_ylabel("True Labels")
 axs.set_title("Confusion Matrix")
 axs.xaxis.set_ticklabels(class_names)
 axs.yaxis.set_ticklabels(class_names)
-axs.figure.set_size_inches(12, 10)
+plt.gcf().set_size_inches(12, 10)
 
 plt.show()
 
