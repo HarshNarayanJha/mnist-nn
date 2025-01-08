@@ -1,0 +1,7 @@
+keras==3.7.0
+numpy==2.0.2
+pillow==11.0.0
+scikit-learn==1.5.2
+streamlit==1.41.0
+streamlit-drawable-canvas==0.9.3
+tensorflow==2.18.0
