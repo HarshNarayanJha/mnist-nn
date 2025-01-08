@@ -59,10 +59,14 @@ print(class_names[y_train[n]])
 
 # %%
 model = keras.models.Sequential()
-model.add(keras.layers.Flatten(input_shape=[28, 28]))
-model.add(keras.layers.Dense(200, activation="relu"))
-model.add(keras.layers.Dense(100, activation="relu"))
-model.add(keras.layers.Dense(10, activation="softmax"))
+model.add(keras.layers.Conv2D(32, (3, 3), activation="relu", input_shape=(28, 28, 1)))
+model.add(keras.layers.MaxPooling2D((2, 2)))
+model.add(keras.layers.Conv2D(64, (3, 3), activation="relu"))
+model.add(keras.layers.MaxPooling2D((2, 2)))
+model.add(keras.layers.Conv2D(64, (3, 3), activation="relu"))
+model.add(keras.layers.Flatten())
+model.add(keras.layers.Dense(64, activation="relu"))
+model.add(keras.layers.Dense(10))
 
 # sigmoid: probabilities produces are independent (sum to more than 1)
 # softmax: probabilities produces are dependent, they sum to 1
@@ -74,10 +78,11 @@ model.summary()
 model.layers
 
 # %%
-model.compile(loss="sparse_categorical_crossentropy", optimizer="sgd", metrics=["accuracy"])
+model.compile(optimizer="adam", loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True), metrics=["accuracy"])
 
 # %%
 X_train.shape
+
 # %%
 history: keras.callbacks.History = model.fit(X_train, y_train, epochs=10, validation_data=(X_val, y_val), batch_size=32)
 
@@ -89,10 +94,12 @@ plt.show()
 
 # %%
 model.evaluate(X_test, y_test)
+
 # %%
 y_prob: np.ndarray = model.predict(X_test)
 y_classes = y_prob.argmax(axis=-1)
 print(y_classes)
+
 # %%
 confusion_matrix = tf.math.confusion_matrix(y_test, y_classes)
 
@@ -121,6 +128,7 @@ for img, pred in zip(imgs, preds):
     plt.imshow(img, cmap=plt.get_cmap("gray"))
     plt.show()
     print("Predicted Class:", class_names[pred])
+
 # %%
-model.save("mnist_digit.keras")
-model.save_weights("mnist_digit.weights.h5")
+model.save("mnist_digit_cnn.keras")
+model.save_weights("mnist_digit_cnn.weights.h5")
